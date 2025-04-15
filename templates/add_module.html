@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Module</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/adminstyles.css') }}">
+    <style>
+        .sidebar {
+            width: 250px;
+            background: #343a40;
+            padding: 20px;
+            position: fixed;
+            height: 100%;
+            color: white;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+
+        .sidebar a:hover {
+            background: #495057;
+        }
+
+        .content {
+            margin-left: 270px;
+            padding: 30px;
+            min-height: 100vh;
+            color: white;
+        }
+
+        .form-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            color: black;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-quiz {
+            display: block;
+            width: 150px;
+            margin: 20px auto 0;
+        }
+    </style>
+    <script>
+        async function loadModules(courseId) {
+            try {
+                let response = await fetch(`/get_modules/${courseId}`);
+                let modules = await response.json();
+                let select = document.getElementById("module_select");
+                select.innerHTML = '<option value="">--Select Module--</option>';
+                modules.forEach(module => {
+                    let option = document.createElement("option");
+                    option.value = module.id;
+                    option.text = `ID: ${module.id} - ${module.title}`;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error("Error loading modules:", error);
+            }
+        }
+
+        async function fetchModuleDetails() {
+            let moduleId = document.getElementById("module_select").value;
+            let title = document.getElementById("title");
+            let content = document.getElementById("content");
+            let learningPoints = document.getElementById("learning_points");
+
+            if (!moduleId) {
+                title.value = "";
+                content.value = "";
+                learningPoints.value = "";
+                return;
+            }
+
+            try {
+                let response = await fetch(`/get_module/${moduleId}`);
+                let data = await response.json();
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    title.value = data.title;
+                    content.value = data.content;
+                    learningPoints.value = data.learning_points;
+                }
+            } catch (error) {
+                console.error("Error fetching module details:", error);
+            }
+        }
+
+        async function addModule(courseId) {
+            let title = document.getElementById("title").value.trim();
+            let content = document.getElementById("content").value.trim();
+            let learningPoints = document.getElementById("learning_points").value.trim();
+
+            if (!title || !content || !learningPoints) {
+                alert("All fields are required!");
+                return;
+            }
+
+            try {
+                let response = await fetch('/add_module', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ course_id: courseId, title, content, learning_points: learningPoints })
+                });
+                let data = await response.json();
+                alert(data.message);
+                loadModules(courseId);
+            } catch (error) {
+                console.error("Error adding module:", error);
+            }
+        }
+
+        async function updateModule() {
+            let moduleId = document.getElementById("module_select").value;
+            if (!moduleId) {
+                alert("Please select a module to update.");
+                return;
+            }
+
+            let title = document.getElementById("title").value.trim();
+            let content = document.getElementById("content").value.trim();
+            let learningPoints = document.getElementById("learning_points").value.trim();
+
+            if (!title || !content || !learningPoints) {
+                alert("All fields are required!");
+                return;
+            }
+
+            try {
+                let response = await fetch('/update_module', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ module_id: moduleId, title, content, learning_points: learningPoints })
+                });
+                let data = await response.json();
+                alert(data.message);
+                loadModules(document.getElementById("course_id").value);
+            } catch (error) {
+                console.error("Error updating module:", error);
+            }
+        }
+
+        async function deleteModule() {
+            let moduleId = document.getElementById("module_select").value;
+            if (!moduleId) {
+                alert("Please select a module to delete.");
+                return;
+            }
+            if (!confirm("Are you sure you want to delete this module?")) return;
+
+            try {
+                let response = await fetch(`/delete_module/${moduleId}`, { method: 'POST' });
+                let data = await response.json();
+                alert(data.message);
+                document.getElementById("title").value = "";
+                document.getElementById("content").value = "";
+                document.getElementById("learning_points").value = "";
+                loadModules(document.getElementById("course_id").value);
+            } catch (error) {
+                console.error("Error deleting module:", error);
+            }
+        }
+
+        function goToAddQuiz() {
+            let courseId = document.getElementById("course_id").value;
+            if (!courseId) {
+                alert("Course ID is required.");
+                return;
+            }
+            window.location.href = `/add_quiz/${courseId}`;
+        }
+
+        window.onload = function() {
+            let courseId = document.getElementById("course_id").value;
+            loadModules(courseId);
+        };
+    </script>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h4 class="text-center text-white">Admin Panel</h4>
+        <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('all_users') }}">All Users</a>
+        <a href="{{ url_for('admin_users') }}">Status and Role Assignment</a>
+        <a href="{{ url_for('courses') }}">Courses</a>  <!-- Added Courses Page Link -->        
+        <a href="{{ url_for('admin_logout') }}">Logout</a>
+    </div>
+
+    <div class="content">
+        <div class="container">
+            <h2 class="text-center">Add/Edit Module</h2>
+            
+            < <div class="form-container">
+                <form>
+                    <input type="hidden" id="course_id" value="{{ course_id }}">
+
+                    <div class="mb-3">
+                        <label for="module_select" class="form-label">Select Module:</label>
+                        <select id="module_select" class="form-control" onchange="fetchModuleDetails()">
+                            <option value="">--Select Module--</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title:</label>
+                        <input type="text" id="title" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="content" class="form-label">Content:</label>
+                        <textarea id="content" class="form-control"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="learning_points" class="form-label">Learning Points:</label>
+                        <textarea id="learning_points" class="form-control"></textarea>
+                    </div>
+
+                    <!-- Buttons in one row -->
+                    <div class="btn-group">
+                        <button type="button" onclick="addModule({{ course_id }})" class="btn btn-success">Add</button>
+                        <button type="button" onclick="updateModule()" class="btn btn-primary">Update</button>
+                        <button type="button" onclick="deleteModule()" class="btn btn-danger">Delete</button>
+                    </div>
+
+                    <!-- Add Quiz button centered below -->
+                    <button type="button" class="btn btn-warning btn-quiz" onclick="goToAddQuiz()">Add Quiz</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

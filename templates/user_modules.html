@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ course.title }} - Modules</title>
+    <!-- Add Bootstrap CSS & JS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/adminstyles.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom right, #00c6ff, #ff00ff);
+            color: #333;
+        }
+        .course-container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .course-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .course-image {
+            width: 180px;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+        }
+        .progress-bar-container {
+            background: #eee;
+            border-radius: 5px;
+            height: 10px;
+            margin-top: 10px;
+        }
+        .progress-bar {
+            background: #2575fc;
+            height: 10px;
+            width: {{ progress }}%;
+            border-radius: 5px;
+        }
+        .module-card {
+            background: white;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        .completed { background: #28a745; color: white; }
+        .in-progress { background: #ffc107; color: black; }
+        .not-enrolled { background: #dc3545; color: white; }
+        .video-container {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        
+        <a href="{{ url_for('user_dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('user_courses') }}">Courses</a>
+        <a href="{{ url_for('logout')  }}">Logout</a>
+        
+    </div>
+    <div class="container mt-4">
+        <div class="course-container">
+            <div class="course-header">
+                <img src="{{ url_for('static', filename=course.image_path[7:]) }}" 
+                     onerror="this.onerror=null; this.src='{{ url_for('static', filename='images/default.jpg') }}';"
+                     alt="Course Image" class="course-image">
+                <div>
+                    <h2>{{ course.title }}</h2>
+                    <p>{{ course.description }}</p>
+                    
+                    <!-- ✅ Start Course Button -->
+                    {% if youtube_id %}
+                    <button id="startCourse" class="btn btn-success">▶ Start Course</button>
+                    <button id="stopCourse" class="btn btn-danger" style="display: none;">⏹ Stop Course</button>
+                    {% else %}
+                    <p class="text-danger">No video available.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+                        <!-- ✅ YouTube Video Container -->
+                        <!-- YouTube Video Embed -->
+            <div id="videoContainer" class="video-container">
+                {% if youtube_id %}
+                    <iframe id="youtubeFrame" width="700" height="400"
+                            src="https://www.youtube.com/embed/{{ youtube_id }}?enablejsapi=1"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen>
+                    </iframe>
+                {% else %}
+                    <p class="text-danger">⚠ Video not available. Please check back later.</p>
+                {% endif %}
+            </div>
+            <!-- ✅ Learning Progress -->
+            <div class="progress-bar-container mt-3">
+                <div class="progress-bar"></div>
+            </div>
+            <p>Status: {{ status }}</p>
+
+            <!-- ✅ Certificate Download Section -->
+            <div class="text-center mt-4">
+                {% if course_completed %}
+                    <a href="{{ url_for('certificate', course_id=course.id) }}" class="btn btn-primary btn-lg">
+                        <i class="fa fa-download"></i> Download Certificate
+                    </a>
+                {% else %}
+                    <p class="text-danger"><strong>Complete the course to download your certificate.</strong></p>
+                {% endif %}
+            </div>
+
+            <!-- ✅ What You Will Learn -->
+            <h4>What You Will Learn</h4>
+            <p>{{ learning_outcomes }}</p>
+
+         <!-- ✅ Table of Contents -->
+        <h4 class="mt-4">Table of Contents</h4>
+        <div class="accordion" id="modulesAccordion">
+            {% for module in modules %}
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading{{ module.id }}">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                            data-bs-target="#module{{ module.id }}" aria-expanded="false" 
+                            aria-controls="module{{ module.id }}">
+                        📖 {{ module.title }}
+                    </button>
+                </h2>
+                <div id="module{{ module.id }}" class="accordion-collapse collapse" 
+                    aria-labelledby="heading{{ module.id }}" data-bs-parent="#modulesAccordion">
+                    <div class="accordion-body">
+                        <p><strong>Module Content:</strong></p>
+                        <p>{{ module.content | safe }}</p>
+                        <p><strong>Learning Points:</strong></p>
+                        <ul>
+                            {% for point in module.learning_points.split(',') %}
+                                <li>{{ point.strip() }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+            <!-- ✅ Final Assessment Button -->
+            <div class="text-center mt-4">
+                <a href="{{ url_for('quiz', course_id=course.id) }}" class="btn btn-danger btn-lg">
+                    Final Assessment
+                </a>
+            </div>
+            <div class="text-center mt-4">
+            <a href="{{ url_for('user_courses') }}" class="btn btn-secondary mt-3">Back to Courses</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('startCourse').addEventListener('click', function() {
+            var videoContainer = document.getElementById('videoContainer');
+            var youtubeFrame = document.getElementById('youtubeFrame');
+            var stopButton = document.getElementById('stopCourse');
+    
+            if ("{{ youtube_id }}") {
+                youtubeFrame.src = "https://www.youtube.com/embed/{{ youtube_id }}?autoplay=1&rel=0&modestbranding=1";
+                videoContainer.style.display = "block";
+                stopButton.style.display = "inline-block";
+            } else {
+                alert("No video available.");
+            }
+        });
+    
+        document.getElementById('stopCourse').addEventListener('click', function() {
+            var videoContainer = document.getElementById('videoContainer');
+            var youtubeFrame = document.getElementById('youtubeFrame');
+            var stopButton = document.getElementById('stopCourse');
+    
+            youtubeFrame.src = ""; // Stop the video
+            videoContainer.style.display = "none"; // Hide the video container
+            stopButton.style.display = "none"; // Hide the Stop button
+        });
+    </script>
+</body>
+</html>

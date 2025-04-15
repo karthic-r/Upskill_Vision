@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>  
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add/Edit Quiz</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/adminstyles.css') }}">
+
+    <style>
+        body {
+            background-color: #6a3de8;
+            background: linear-gradient(to bottom right, #00c6ff, #ff00ff);
+            height: 100vh;
+           
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #343a40;
+            padding: 20px;
+            position: fixed;
+            height: 100%;
+            color: white;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+
+        .sidebar a:hover {
+            background: #495057;
+        }
+
+        .content {
+            margin-left: 270px;
+            padding: 30px;
+            min-height: 100vh;
+            color: white;
+        }
+
+        .form-container {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            color: black;
+            max-width: 600px;
+            margin: auto;
+        }
+
+        h2 {
+            text-align: center;
+            color: white;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .btn-container .btn {
+            flex: 1;
+        }
+
+        .add-module-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+
+</head>
+<body>
+    
+    <div class="sidebar">
+        <h4 class="text-center text-white">Admin Panel</h4>
+        <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('all_users') }}">All Users</a>
+        <a href="{{ url_for('admin_users') }}">Status and Role Assignment</a>
+        <a href="{{ url_for('courses') }}">Courses</a>  <!-- Added Courses Page Link -->        
+        <a href="{{ url_for('admin_logout') }}">Logout</a>
+    </div>
+
+    <div class="content">
+        <h2>Add/Edit Quiz</h2>
+        
+        <div class="form-container">
+            <form>
+                <input type="hidden" id="course_id" value="{{ course_id }}">
+
+                <div class="mb-3">
+                    <label for="quiz_id" class="form-label">Quiz ID:</label>
+                    <select id="quiz_id" class="form-control" onchange="fetchQuizById()">
+                        <option value="">Select Quiz ID</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="question" class="form-label">Question:</label>
+                    <textarea id="question" class="form-control"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label for="options" class="form-label">Options (Comma Separated):</label>
+                    <input type="text" id="options" class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label for="correct_answer" class="form-label">Correct Answer:</label>
+                    <input type="text" id="correct_answer" class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label for="points" class="form-label">Points:</label>
+                    <input type="number" id="points" class="form-control">
+                </div>
+
+                <div class="btn-container">
+                    <button type="button" onclick="addQuiz()" class="btn btn-success">Add</button>
+                    <button type="button" onclick="updateQuiz()" class="btn btn-primary">Update</button>
+                    <button type="button" onclick="deleteQuiz()" class="btn btn-danger">Delete</button>
+                </div>
+                <div class="add-module-container">
+                    <button type="button" class="btn btn-warning" onclick="goToAddModule()">Add Module</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function loadQuizIds() {
+            let courseId = document.getElementById("course_id").value;
+            fetch(`/get_quiz/${courseId}`)
+            .then(response => response.json())
+            .then(questions => {
+                let quizDropdown = document.getElementById("quiz_id");
+                quizDropdown.innerHTML = '<option value="">Select Quiz ID</option>';
+                questions.forEach(q => {
+                    let option = document.createElement("option");
+                    option.value = q.id;
+                    option.textContent = `Quiz ID: ${q.id}`;
+                    quizDropdown.appendChild(option);
+                });
+            });
+        }
+
+        function fetchQuizById() {
+            let quizId = document.getElementById("quiz_id").value;
+            if (!quizId) return;
+
+            fetch(`/get_single_quiz/${quizId}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("question").value = data.question_text;
+                document.getElementById("options").value = data.options;
+                document.getElementById("correct_answer").value = data.correct_answer;
+                document.getElementById("points").value = data.points;
+            });
+        }
+
+        function addQuiz() {
+            let courseId = document.getElementById("course_id").value;
+            let question = document.getElementById("question").value;
+            let options = document.getElementById("options").value;
+            let correctAnswer = document.getElementById("correct_answer").value;
+            let points = document.getElementById("points").value;
+
+            fetch('/add_quiz', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ course_id: courseId, question_text: question, options: options, correct_answer: correctAnswer, points: points })
+            }).then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                loadQuizIds();
+            });
+        }
+
+        function updateQuiz() {
+            let quizId = document.getElementById("quiz_id").value;
+            let question = document.getElementById("question").value;
+            let options = document.getElementById("options").value;
+            let correctAnswer = document.getElementById("correct_answer").value;
+            let points = document.getElementById("points").value;
+
+            fetch('/update_quiz', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ quiz_id: quizId, question_text: question, options: options, correct_answer: correctAnswer, points: points })
+            }).then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                loadQuizIds();
+            });
+        }
+
+        function deleteQuiz() {
+            let quizId = document.getElementById("quiz_id").value;
+            if (!quizId) return alert("Please select a Quiz ID!");
+
+            fetch(`/delete_quiz/${quizId}`, {
+                method: 'POST'
+            }).then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                loadQuizIds();
+            });
+        }
+
+        window.onload = loadQuizIds;
+
+        function goToAddModule() {
+            let courseId = document.getElementById("course_id").value;
+            window.location.href = `/add_module/${courseId}`;
+        }
+
+    </script>
+    
+</body>
+</html>

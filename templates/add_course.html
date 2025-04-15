@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Course</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/adminstyles.css') }}">
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <h4 class="text-center text-white">Admin Panel</h4>
+        <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('all_users') }}">All Users</a>
+        <a href="{{ url_for('admin_users') }}">Status and Role Assignment</a>
+        <a href="{{ url_for('courses') }}">Courses</a>        
+        <a href="{{ url_for('admin_logout') }}">Logout</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <h2 class="text-center">Add New Course</h2>
+
+            <!-- Flash messages for feedback -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="form-container">
+                <form id="addCourseForm" method="POST" action="{{ url_for('add_course') }}" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label">Course Title:</label>
+                        <input type="text" name="course_title" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Description:</label>
+                        <textarea name="description" class="form-control" rows="3" required></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Instructor:</label>
+                        <select name="instructor_id" class="form-select" required>
+                            {% for instructor in instructors %}
+                                <option value="{{ instructor[0] }}">{{ instructor[1] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Start Date:</label>
+                        <input type="date" id="start_date" name="start_date" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Duration (Weeks):</label>
+                        <input type="number" id="duration" name="duration" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Projected End Date:</label>
+                        <input type="date" id="end_date" name="end_date" class="form-control" readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Upload Course Image:</label>
+                        <input type="file" name="course_image" class="form-control" accept="image/*" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">YouTube Video Link:</label>
+                        <input type="url" name="video_path" class="form-control" placeholder="https://www.youtube.com/watch?v=..." required>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-success">Submit and Notify</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('duration').addEventListener('input', function() {
+            let startDate = new Date(document.getElementById('start_date').value);
+            let weeks = parseInt(this.value);
+            if (!isNaN(weeks) && startDate) {
+                let endDate = new Date(startDate);
+                endDate.setDate(startDate.getDate() + weeks * 7);
+                document.getElementById('end_date').value = endDate.toISOString().split('T')[0];
+            }
+        });
+    </script>
+
+</body>
+</html>
