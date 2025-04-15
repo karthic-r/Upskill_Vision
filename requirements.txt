@@ -1,0 +1,13 @@
+Flask
+Flask-Mail
+matplotlib
+plotly
+sqlite3
+werkzeug
+itsdangerous
+pandas
+seaborn
+io
+base64
+datetime
+xlsxwriter
