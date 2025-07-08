@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/adminstyles.css') }}">
+    <style>
+        body {
+            background: linear-gradient(to bottom right, #00c6ff, #ff00ff);
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 220px;
+            height: 100vh;
+            position: fixed;
+            background: #2c3e50;
+            padding-top: 20px;
+        }
+        .sidebar a {
+            padding: 10px 15px;
+            display: block;
+            color: white;
+            text-decoration: none;
+        }
+        .sidebar a:hover {
+            background: #34495e;
+        }
+        .content {
+            margin-left: 230px;
+            padding: 20px;
+        }
+        .card {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+        }
+        .filter-section {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+        .chart-container {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h4 class="text-center text-white">Admin Panel</h4>
+        <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('all_users') }}">All Users</a>
+        <a href="{{ url_for('admin_users') }}">Status and Role Assignment</a>
+        <a href="{{ url_for('courses') }}">Courses</a>  <!-- Added Courses Page Link -->        
+        <a href="{{ url_for('admin_logout') }}">Logout</a>
+    </div>
+
+    <div class="content">
+        <h2>Welcome,Sagnik Ghosal</h2>
+        <p>You are logged in as: <strong>{{ admin_email }}</strong></p>
+
+        <div class="row g-3"> 
+            <div class="col-md-3">
+                <div class="card bg-primary text-white">
+                    <h5>Number Of Users</h5>
+                    <h2>{{ total_users }}</h2>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <h5>Total Learners</h5>
+                    <h2>{{ total_learners }}</h2>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <h5>Total Instructors</h5>
+                    <h2>{{ total_instructors }}</h2>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <h5>Approved Users</h5>
+                    <h2>{{ approved_users }}</h2>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card bg-warning text-white">
+                    <h5>Pending Users</h5>
+                    <h2>{{ pending_users }}</h2>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card bg-danger text-white">
+                    <h5>Rejected Users</h5>
+                    <h2>{{ rejected_users }}</h2>
+                </div>
+            </div>
+        
+            <div class="col-md-3">
+                <div class="card bg-secondary text-white">
+                    <h5>Total Courses</h5>
+                    <h2>{{ total_courses }}</h2>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card bg-dark text-white">
+                    <h5>Total Enrollments</h5>
+                    <h2>{{ total_enrollments }}</h2>
+                </div>
+            </div>
+        </div>
+        
+        <div class="filter-section">
+            <form method="POST" action="{{ url_for('admin_dashboard') }}">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label for="course">Filter by Course:</label>
+                        <select name="course" class="form-select">
+                            <option value="">All Courses</option>
+                            {% for course in courses %}
+                            <option value="{{ course[0] }}" {% if selected_course == course[0] %}selected{% endif %}>{{ course[1] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label for="user">Filter by User:</label>
+                        <select name="user" class="form-select">
+                            <option value="">All Users</option>
+                            {% for user in users %}
+                            <option value="{{ user[0] }}">{{ user[1] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="start_date">Start Date:</label>
+                        <input type="date" name="start_date" class="form-control">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="end_date">End Date:</label>
+                        <input type="date" name="end_date" class="form-control">
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">Filter</button>
+                    </div>
+                    
+                    <a href="{{ url_for('export_excel') }}" class="btn btn-success">📥 Export to Excel</a>
+                </div>
+            </form>
+        </div>
+        
+        <div class="chart-container">
+            <h4>Course Completion Rates</h4>
+            {{ completion_plot | safe }}
+        </div>
+        
+        <div class="chart-container">
+            <h3 class="text-center fw-bold">🏆 Top Performers</h3>
+            <div class="leaderboard">
+                {{ top_performers_plot | safe }}
+            </div>
+        </div>
+        
+        <div class="chart-container">
+            <h4>Training Recommended</h4>
+            {{ low_performers_plot | safe }}
+        </div>
+        
+        <div class="chart-container">
+            <h3 class="text-center fw-bold">🏆 Top Courses Leaderboard</h3>
+            <div class="leaderboard">
+                {{ top_courses_plot | safe }}
+            </div>
+        </div>
+        
+        
+        
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

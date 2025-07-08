@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upskill Vision - Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="auth-card">
+            <div class="header">
+                <h1>Upskill Vision</h1>
+                <p>Get started with your learning journey</p>
+            </div>
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <div class="card-content">
+                <form id="login-form" method="POST">
+                    <div class="form-group">
+                        <input type="email" name="email" placeholder="Username or email" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" name="password" placeholder="Password" required>
+                    </div>
+                    <div class="form-options">
+                        <a href="{{ url_for('forgot_password') }}" class="forgot-password">Forgot password?</a>
+                    </div>
+                    <button type="submit" class="btn-primary">LOGIN</button>
+                </form>
+                <p class="redirect-link">Don't have an account? <a href="{{ url_for('signup') }}">Sign up</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

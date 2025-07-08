@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upskill Vision - Sign Up</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="auth-card">
+            <div class="header">
+                <h1>Upskill Vision</h1>
+                <p>Create your account to start learning</p>
+            </div>
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <div class="card-content">
+                <form id="signup-form" method="POST">
+                    <div class="form-group">
+                        <input type="text" name="name" placeholder="Full Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" name="email" placeholder="Email Address" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" name="password" placeholder="Password" required>
+                    </div>
+                    <div class="form-terms">
+                        <input type="checkbox" id="terms" required>
+                        <label for="terms">I agree to the <a href="{{ url_for('terms') }}">Terms and Conditions</a></label>
+                    </div>
+                    <button type="submit" class="btn-primary">SIGN UP</button>
+                </form>
+
+                <p class="redirect-link">Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

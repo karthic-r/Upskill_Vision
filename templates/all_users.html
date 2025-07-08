@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Users</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/adminstyles.css') }}">
+
+    
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h4 class="text-center text-white">Admin Panel</h4>
+        <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('all_users') }}">All Users</a>
+        <a href="{{ url_for('admin_users') }}">Status and Role Assignment</a>
+        <a href="{{ url_for('courses') }}">Courses</a>  <!-- Added Courses Page Link -->        
+        <a href="{{ url_for('admin_logout') }}">Logout</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <h2 class="mb-4">All Registered Users</h2>
+
+        <!-- Navigation Buttons -->
+        <div class="btn-container">
+            <button class="btn btn-success" onclick="scrollToSection('approved-users')">Approved Users</button>
+            <button class="btn btn-warning" onclick="scrollToSection('pending-users')">Pending Users</button>
+            <button class="btn btn-danger" onclick="scrollToSection('rejected-users')">Rejected Users</button>
+        </div>
+
+        <!-- Approved Users Table -->
+        <div id="approved-users" class="card bg-white shadow-sm p-3 mb-4">
+            <h3 class="text-center">Approved Users</h3>
+            <table class="table table-bordered table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Email Verified</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users if user.approval_status == 'approved' %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.role }}</td>
+                        <td>{{ "Yes" if user.is_verified else "No" }}</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="5" class="text-center">No approved users found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pending Users Table -->
+        <div id="pending-users" class="card bg-white shadow-sm p-3 mb-4">
+            <h3 class="text-center">Pending Users</h3>
+            <table class="table table-bordered table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Email Verified</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users if user.approval_status == 'pending' %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.role }}</td>
+                        <td>{{ "Yes" if user.is_verified else "No" }}</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="5" class="text-center">No pending users found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Rejected Users Table -->
+        <div id="rejected-users" class="card bg-white shadow-sm p-3 mb-4">
+            <h3 class="text-center">Rejected Users</h3>
+            <table class="table table-bordered table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Email Verified</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users if user.approval_status == 'rejected' %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.role }}</td>
+                        <td>{{ "Yes" if user.is_verified else "No" }}</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="5" class="text-center">No rejected users found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JavaScript Function to Scroll to Section -->
+    <script>
+        function scrollToSection(sectionId) {
+            document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+
+</body>
+</html>

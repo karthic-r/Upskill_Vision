@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Courses</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/adminstyles.css') }}">
+    <style>
+        body {
+            background-color: #6a3de8;
+            background: linear-gradient(to bottom right, #00c6ff, #ff00ff);
+            height: 100vh;
+           
+        }
+        .main-container {
+            margin-left: 100px;
+            padding: 20px;
+            margin-right:100px;
+        }
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 60px;
+            margin-top: 20px;
+            padding: 10px;
+        }
+        .course-card {
+            border-radius: 10px;
+            box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s;
+            background: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+        .course-card:hover {
+            transform: scale(1.05);
+        }
+        .course-image {
+            width: 100%;
+            height: 180px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+        .course-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #8b0000;
+            margin-bottom: 5px;
+        }
+        .course-description {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .course-instructor {
+            font-size: 14px;
+            font-weight: bold;
+            color: #0072ff;
+        }
+        .course-duration {
+            font-size: 14px;
+            color: #000;
+            margin-top: 5px;
+        }
+        .button-group {
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .edit-btn, .delete-btn {
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .edit-btn {
+            background-color: #28a745;
+            color: white;
+        }
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+        .search-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+            width: 90%;
+            margin-left: 150px;
+            margin-right: auto;
+        }
+        .search-input {
+            flex-grow: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .search-btn, .add-course-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .search-btn {
+            background-color: #0072ff;
+            color: white;
+            margin-left: 10px;
+        }
+        .add-course-btn {
+            background-color: #28a745;
+            color: white;
+            margin-left: 10px;
+        }
+        .add-course-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h4 class="text-center text-white">Admin Panel</h4>
+        <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('all_users') }}">All Users</a>
+        <a href="{{ url_for('admin_users') }}">Status and Role Assignment</a>
+        <a href="{{ url_for('courses') }}">Courses</a>  <!-- Added Courses Page Link -->        
+        <a href="{{ url_for('admin_logout') }}">Logout</a>
+    </div>
+
+    <div class="main-container">
+        <form class="search-container" method="GET" action="{{ url_for('courses') }}">
+            <input type="text" class="search-input" name="search" placeholder="Search courses..." value="{{ search_query }}">
+            <button type="submit" class="search-btn">Search</button>
+            <a href="{{ url_for('add_course') }}" class="add-course-btn">Add Course</a>
+        </form>
+
+        <main class="main-content">
+            <div class="courses-grid">
+                {% for course in courses %}
+                    {% if search_query.lower() in course[1].lower() %}
+                    <div class="course-card" id="course-{{ course[0] }}">
+                        <img src="{{ course[5] if course[5] else '/static/default.jpg' }}" alt="Course Image" class="course-image">
+                        <div class="course-content">
+                            <h3 class="course-title">{{ course[1] }}</h3>
+                            <p class="course-description">{{ course[2] }}</p>
+                            <p class="course-instructor">Instructor: {{ course[4] }}</p>
+                            <p class="course-duration">Duration: {{ course[3] }} Weeks</p>
+                            <div class="button-group">
+                                <button class="edit-btn" onclick="window.location.href='/add_module/{{ course[0] }}'">
+                                    Add Module and Question
+                                </button>
+                                <button class="delete-btn" onclick="window.location.href='/edit_course/{{ course[0] }}'">
+                                    Edit and Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function deleteCourse(courseId) {
+            if (confirm("Are you sure you want to delete this course?")) {
+                fetch(`/delete_course/${courseId}`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById(`course-${courseId}`).remove();
+                    } else {
+                        alert("Failed to delete the course.");
+                    }
+                });
+            }
+        }
+    </script>
+
+</body>
+</html>

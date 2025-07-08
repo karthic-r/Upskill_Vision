@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upskill Vision - Sign Up</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="auth-card">
+            <div class="header">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" style="height:150px" "weight:150px";>
+
+                <h1>UpSkill Vision</h1>
+                <h4>-Your Learning Path</h4>
+                <p>Create your account to start learning</p>
+            </div>
+
+            <!-- Login Buttons -->
+            <div class="login-buttons">
+                <a href="{{ url_for('admin_login') }}" class="btn btn-admin">Admin Login</a>
+                <a href="{{ url_for('login') }}" class="btn btn-user">User Login</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

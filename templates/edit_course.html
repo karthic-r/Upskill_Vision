@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Course</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/adminstyles.css') }}">
+</head>
+<body>
+
+    <div class="sidebar">
+        <h4 class="text-center text-white">Admin Panel</h4>
+        <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('all_users') }}">All Users</a>
+        <a href="{{ url_for('admin_users') }}">Status and Role Assignment</a>
+        <a href="{{ url_for('courses') }}">Courses</a>  <!-- Added Courses Page Link -->        
+        <a href="{{ url_for('admin_logout') }}">Logout</a>
+    </div>
+
+    <div class="main-content">
+        <div class="container">
+            <h2 class="text-center">Edit Course</h2>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="form-container">
+                <form id="editCourseForm" method="POST" action="{{ url_for('update_course') }}" enctype="multipart/form-data">
+                    <input type="hidden" name="course_id" value="{{ course[0] }}">
+
+                    <div class="mb-3">
+                        <label class="form-label">Course Title:</label>
+                        <input type="text" name="course_title" class="form-control" value="{{ course[1] }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Description:</label>
+                        <textarea name="description" class="form-control" rows="3" required>{{ course[2] }}</textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Instructor:</label>
+                        <select name="instructor_id" class="form-select" required>
+                            {% for instructor in instructors %}
+                                <option value="{{ instructor[0] }}" {% if instructor[0] == course[4] %}selected{% endif %}>
+                                    {{ instructor[1] }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Start Date:</label>
+                        <input type="date" id="start_date" name="start_date" class="form-control" value="{{ course[5] }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Duration (Weeks):</label>
+                        <input type="number" id="duration" name="duration" class="form-control" value="{{ course[3] }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Projected End Date:</label>
+                        <input type="date" id="end_date" name="end_date" class="form-control" value="{{ course[6] }}" readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Upload Course Image:</label>
+                        <input type="file" name="course_image" class="form-control" accept="image/*">
+                        {% if course[7] %}
+                            <p>Current Image: <img src="{{ course[7] }}" width="100"></p>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">YouTube Video Link:</label>
+                        <input type="text" name="video_path" class="form-control" value="{{ course[8] }}" placeholder="Enter YouTube video link">
+                    </div>
+                    
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Update</button>
+                        <button type="button" class="btn btn-danger" onclick="deleteCourse({{ course[0] }})">Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function deleteCourse(courseId) {
+            if (confirm("Are you sure you want to delete this course?")) {
+                fetch(`/delete_course/${courseId}`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = "/courses";
+                    } else {
+                        alert("Failed to delete the course.");
+                    }
+                });
+            }
+        }
+    </script>
+
+</body>
+</html>
