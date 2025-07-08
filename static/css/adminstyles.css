@@ -1,0 +1,77 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', 'Roboto', sans-serif;
+   }
+body {
+    background-color: #6a3de8;
+    background: linear-gradient(to bottom right, #00c6ff, #ff00ff);
+    height: 100vh;
+   
+}
+.content {
+    margin-left: 250px;
+    padding: 20px;
+}
+.sidebar {
+    width: 240px;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: #343a40;
+    color: white;
+    padding-top: 20px;
+}
+.sidebar a {
+    display: block;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+}
+.sidebar a:hover {
+    background: #495057;
+}
+.btn-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.card {
+    border: none;
+    border-radius: 10px;
+    padding: 20px;
+}
+.table {
+    margin-bottom: 0;
+}
+.table thead {
+    text-align: center;
+}
+h3 {
+    padding: 10px;
+    margin: 0;
+    background: #e9ecef;
+    border-radius: 5px;
+}
+/* Main Content */
+.main-content {
+    margin-left: 270px;
+    padding: 20px;
+}
+
+/* Form Container */
+.form-container {
+    max-width: 600px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Button Styling */
+.btn {
+    margin: 5px;
+}

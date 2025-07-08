@@ -1,0 +1,315 @@
+/* =========== Global Styles =========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', 'Roboto', sans-serif;
+   }
+   body {
+    background-color: #6a3de8;
+    background: linear-gradient(to bottom right, #00c6ff, #ff00ff);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+   }
+   .container {
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 20px;
+   }
+   /* =========== Authentication Card Styles =========== */
+   .auth-card {
+    max-width: 550px;
+    margin: 0 auto;
+   }
+   .header {
+    color: white;
+    text-align: center;
+    padding: 0 20px 30px 20px;
+   }
+   .header h1 {
+    font-size: 42px;
+    font-weight: 600;
+    margin-bottom: 10px;
+   }
+   .header p {
+    font-size: 18px;
+    opacity: 0.9;
+   }
+   .card-content {
+    background-color: white;
+    border-radius: 10px;
+    padding: 30px;
+    color: #333;
+    
+   }
+   h2 {
+    color: #6a3de8;
+    margin-bottom: 25px;
+    font-size: 24px;
+    text-align: center;
+   }
+   /* =========== Account Type Selection =========== */
+   .account-types {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 30px;
+    
+   }
+   .account-type {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    padding: 15px;
+    width: 30%;
+    transition: all 0.3s ease;
+    
+   }
+   .account-type:hover {
+    border-color: #6a3de8;
+    background-color: rgba(106, 61, 232, 0.02);
+   }
+   .account-type.selected {
+    border-color: #6a3de8;
+    background-color: rgba(106, 61, 232, 0.05);
+   }
+   .circle-icon {
+    width: 50px;
+    height: 50px;
+    background-color: #6a3de8;
+    border-radius: 50%;
+    margin-bottom: 10px;
+   }
+   .account-type span {
+    font-size: 14px;
+    font-weight: 500;
+   }
+   /* =========== Form Elements =========== */
+   .form-group {
+    margin-bottom: 15px;
+   }
+   input[type="text"],
+   input[type="password"],
+   input[type="email"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s ease;
+   }
+   input[type="text"]:focus,
+   input[type="password"]:focus,
+   input[type="email"]:focus {
+    border-color: #6a3de8;
+   }
+   .form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+   }
+   .remember-me {
+    display: flex;
+    align-items: center;
+   }
+   .remember-me input {
+    margin-right: 5px;
+   }
+   .forgot-password {
+    color: #6a3de8;
+    text-decoration: none;
+    font-size: 14px;
+   }
+   .forgot-password:hover {
+    text-decoration: underline;
+   }
+   .btn-primary {
+    background-color: #6a3de8;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px;
+    width: 100%;
+    font-size: 16px;
+    text-transform: uppercase;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+   }
+   .btn-primary:hover {
+    background-color: #5c34cb;
+   }
+   .btn-secondary {
+    display: block;
+    width: 200px;
+    margin: 20px auto 0;
+    background-color: #f0f0f0;
+    color: #333;
+    text-align: center;
+    padding: 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+   }
+   .btn-secondary:hover {
+    background-color: #e0e0e0;
+    color: #6a3de8;
+   }
+   .redirect-link {
+    margin-top: 20px;
+    font-size: 14px;
+    text-align: center;
+   }
+   .redirect-link a {
+    color: #6a3de8;
+    text-decoration: none;
+   }
+   .redirect-link a:hover {
+    text-decoration: underline;
+   }
+   /* =========== Sign Up Form Specific Styles =========== */
+   .form-terms {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 25px;
+    font-size: 14px;
+   }
+   .form-terms input {
+    margin-right: 8px;
+    margin-top: 3px;
+   }
+   .form-terms a {
+    color: #6a3de8;
+    text-decoration: none;
+   }
+   .form-terms a:hover {
+    text-decoration: underline;
+   }
+   /* =========== Forgot Password Page =========== */
+.smaller-card {
+    max-width: 450px;
+   }
+   .instructions {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #666;
+    font-size: 15px;
+   }
+   /* =========== Terms Page =========== */
+   .terms-container {
+    align-items: flex-start;
+    padding-top: 50px;
+    padding-bottom: 50px;
+   }
+   .terms-card {
+    max-width: 800px;
+   }
+   .terms-content {
+    max-height: 70vh;
+    overflow-y: auto;
+   }
+   .terms-text {
+    margin-bottom: 30px;
+   }
+   .terms-text h3 {
+    color: #333;
+    margin: 20px 0 10px;
+    font-size: 18px;
+   }
+   .terms-text p {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 15px;
+   }
+
+   /* Flash Messages */
+.flash-messages {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+/* Alert Box Styling */
+.alert {
+    padding: 12px;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-bottom: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Error Message */
+.alert-error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Success Message */
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+/* Warning Message */
+.alert-warning {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+}
+
+/* Info Message */
+.alert-info {
+    background: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+/* Centering the login buttons */
+.login-buttons {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Button Styling */
+.btn {
+    display: inline-block;
+    padding: 12px 20px;
+    margin: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: 0.3s ease-in-out;
+}
+
+/* Admin Login Button */
+.btn-admin {
+    background:#0275d8;
+    color: white;
+    border: 2px solid #0275d8;
+}
+
+.btn-admin:hover {
+    background: #0275d8;
+    border-color: #0275d8;
+}
+
+/* User Login Button */
+.btn-user {
+    background: #0275d8;
+    color: white;
+    border: 2px solid #025aa5;
+}
+
+.btn-user:hover {
+    background: #025aa5;
+    border-color: #014c8c;
+}

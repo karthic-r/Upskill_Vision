@@ -1,0 +1,107 @@
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+    font-family: 'Segoe UI', 'Roboto', sans-serif; 
+  } 
+   
+  body { 
+    background-color: #6a3de8; 
+    background: linear-gradient(to bottom right, #00c6ff, #ff00ff); 
+    height: 100vh; 
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+  } 
+  .coursefield{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    gap: 25px;
+    margin: 2%;
+  }
+  .container form{ 
+  width: 100%; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  padding: 20px 20px;
+  border-radius: 10px; 
+  background-color: white;
+  } 
+  input[type="text"],
+  input[type="date"],
+  input[type="number"],
+  textarea,
+  select { 
+  min-width: 20vw; 
+  padding: 5px 5px; 
+  border: 1px solid black; 
+  border-radius: 7.5px; 
+  font-size: 15px; 
+  outline: none; 
+  transition: border-color 0.3s ease; 
+  } 
+  input[type="text"]:focus, 
+  input[type="password"]:focus, 
+  input[type="email"]:focus,
+  textarea:focus
+  select:focus { 
+  border-color: #6a3de8; 
+  } 
+  h2 { 
+    color: #6a3de8; 
+    margin-bottom: 5px; 
+    font-size: 20px; 
+    text-align: center; 
+  } 
+  div textarea{
+    min-height: 15vh;
+  }
+  .button button{
+    margin-top: 15px;
+    border-radius: 10px;
+    padding: 5px;
+    font-size: 15px;
+    font-weight: 750;
+    color:#e714e3;
+    background-color:#0fdac5;
+    border: 2px solid #1E90FF;
+  }
+  .button{
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+  }
+  p.success{
+    color: green;
+    font: 1em sans-serif;
+    margin-top: 10%;
+  }
+  div.option{
+    display: grid;
+    gap: 5px;
+  }
+  .button-top{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2.5% 0% 5% 0%;
+  }
+  .button-top button{
+    width: 20%;
+    font-size: medium;
+    font-weight: 500;
+    border-radius: 50px;
+  }
+  .del{
+    background-color: rgb(255, 79, 39);
+  }
+  .add{
+    background-color: rgb(153, 255, 0);
+  }
